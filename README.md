@@ -1,53 +1,63 @@
-# Export Contacts FluentCRM (gratuit)
+# Export FluentCRM Contacts
 
-Plugin WordPress **très léger** (un seul fichier, aucune dépendance, aucun réglage) pour exporter **en un clic** tous les contacts de [FluentCRM](https://fluentcrm.com/) — avec **toutes leurs informations**, listes, étiquettes (tags), statuts et champs personnalisés.
+A **very lightweight** WordPress plugin (one PHP file, no dependencies, no settings) that exports **all FluentCRM contacts in one click** — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV, or copies them as a table to your clipboard for pasting into Excel.
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue) ![Licence](https://img.shields.io/badge/licence-GPL--2.0-green) ![Gratuit](https://img.shields.io/badge/prix-gratuit-brightgreen)
+![Version](https://img.shields.io/badge/version-0.2.0-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
 
-## ✨ Fonctionnement
+## ✨ How it works
 
-Dans l'administration WordPress : **FluentCRM → Export Contacts** — c'est tout.
+In your WordPress admin: **FluentCRM → Export Contacts** — that's it.
 
-1. **⬇ Télécharger en Excel (CSV)** : télécharge un fichier `fluentcrm-contacts-....csv` encodé UTF‑8 (avec BOM), qui s'ouvre **directement dans Excel** par double-clic. Le séparateur (`;` ou `,`) est sélectionnable selon l'Excel installé.
-2. **📋 Copier le tableau** : copie tous les contacts **dans le presse-papiers** en tableau (TSV). Cliquez ensuite sur la première cellule vide d'Excel et **Collez (Ctrl+V)** : chaque donnée arrive dans sa colonne.
+1. **⬇ Download for Excel (CSV)**: downloads a `fluentcrm-contacts-....csv` file encoded in UTF‑8 (with BOM), which **opens directly in Excel** with a double-click. The separator (`;` or `,`) is selectable depending on your Excel version.
+2. **📋 Copy the table**: copies **all contacts to the clipboard** as a table (TSV). Click the first empty cell in Excel, then **paste (Ctrl+V)**: every value lands in its own column.
 
-Les deux options acceptent un **filtre facultatif de statut** (tous, inscrits, désabonnés, en attente, rebondis, non confirmés).
+Both options accept an **optional status filter** (all, subscribed, unsubscribed, pending, bounced, unconfirmed).
 
-## 📦 Données exportées
+### Why not use FluentCRM's own export?
 
-- Identité : prénom, nom, civilité, e-mail, téléphone, date de naissance, fuseau horaire
-- Adresse : adresse 1/2, code postal, ville, région/état, pays
-- CRM : **statut**, type de contact, **listes**, **étiquettes**, **champs personnalisés** (découverts dynamiquement), points, valeur vie client, source, entreprise, IP
-- Suivi : date de création, dernière modification, dernière activité
+FluentCRM (free version) has CSV **import** built in, but contact **export** is a Pro feature: the `fcrm_manage_contacts_export` capability exists in the core, yet no free export endpoint implements it. This plugin fills that gap — and it also honors that same FluentCRM capability for its AJAX/CSV actions, so CRM managers (not only admins) can export if you grant them the capability.
 
-Les **listes** et **étiquettes** sont exportées dans une seule cellule par contact (séparées par `", "`), et les **champs personnalisés** sont ajoutés automatiquement en colonnes, sans réglage.
+## 📦 Exported data
 
-## 🪶 Pourquoi ce plugin est léger
+- Identity: first name, last name, title, email, phone, date of birth, timezone
+- Address: address lines 1/2, postal code, city, state/province, country
+- CRM: **status**, contact type, **lists**, **tags**, **custom fields** (discovered automatically), points, lifetime value, source, company ID, IP
+- Tracking: created at, updated at, last activity
 
-- **Un seul fichier PHP** (~500 lignes), pas de JavaScript/CSS empaqueté, pas de bibliothèque tierce.
-- Aucune page de réglages, aucun stockage propre : rien à maintenir.
-- Requêtes SQL **par lots de 500 contacts** : fonctionne même avec des dizaines de milliers de contacts, sans dépasser la mémoire.
-- Interface 100 % admin native de WordPress : la montée des versions de FluentCRM ou de WordPress n'a pas d'impact (le plugin lit les tables standard `fc_subscribers`, `fc_tags`, `fc_lists`, `fc_subscriber_pivot`, `fc_subscriber_meta`).
-- Compatible i18n (textdomain `fluentcrm-contactsexport`).
+**Lists** and **tags** are exported into a single cell per contact (joined with `", "`), and **custom fields** are added as columns automatically, with zero configuration.
 
-## 🔒 Sécurité
+## 🪶 Why this plugin is lightweight
 
-Export réservé aux administrateurs (`manage_options`), nonces WordPress sur les deux parcours (téléchargement et copie), entrées validées et requêtes préparées.
+- **A single PHP file**, no bundled JS/CSS build, no third-party library.
+- No settings page, no own storage: nothing to maintain.
+- SQL queries **chunked in batches of 500 contacts**: works smoothly even with tens of thousands of contacts, without exceeding memory limits (500 contacts typically use only a few MB of RAM per batch — including for exports of 3,000+ contacts, or 30,000+).
+- Native WordPress admin UI only: FluentCRM updates have minimal impact (the plugin reads the standard `fc_subscribers`, `fc_tags`, `fc_lists`, `fc_subscriber_pivot`, and `fc_subscriber_meta` tables).
+- Fully translatable (textdomain `fluentcrm-contactsexport`) with bundled French, German, and Dutch translations, plus a `.pot` template.
+
+## 🔒 Security
+
+An export requires `manage_options` (administrator) or the FluentCRM `fcrm_manage_contacts_export` capability. Both flows (download and clipboard) are protected by WordPress nonces, and all data goes through validated, prepared SQL queries. Everything stays on your site — no data is sent anywhere.
 
 ## 🚀 Installation
 
-1. Téléchargez le dossier `fluentcrm-contactsexport/` (ou l'archive du dépôt) puis : **Extensions → Ajouter → Téléverser une extension**.
-2. Activez **Export Contacts FluentCRM (gratuit)**.
-3. Ouvrez **FluentCRM → Export Contacts** et cliquez.
+1. Download the repository, then in WordPress: **Plugins → Add New → Upload Plugin** (or copy `fluentcrm-contactsexport.php` and the `languages/` folder into `wp-content/plugins/fluentcrm-contactsexport/`).
+2. Activate **Export FluentCRM Contacts**.
+3. Open **FluentCRM → Export Contacts** and click a button.
 
-Prérequis : WordPress ≥ 5.2, PHP ≥ 7.0, FluentCRM activé.
+Requirements: WordPress ≥ 5.2, PHP ≥ 7.0, FluentCRM active.
+
+> In your Excel **site language**: German uses `;` (and `de_DE` UI translation), English dashboards use `,`.
 
 ## 🛠 Maintenance
 
-Aucune action requise. Le plugin détecte automatiquement :
-- les champs personnalisés de FluentCRM (via son API interne, avec repli sur la table `fc_subscriber_meta`),
-- les tables standard de FluentCRM et affiche un message clair si elles sont absentes (installation inachevée).
+No action required. The plugin automatically:
+- discovers FluentCRM custom fields (via its internal API, with a fallback on the `fc_subscriber_meta` table);
+- detects the standard FluentCRM tables and shows a clear message if they are missing (incomplete setup).
 
-## 📄 Licence
+## 🌍 Translations
 
-[GPL‑2.0-or-later](LICENSE) — publié en open source, gratuitement.
+The admin UI is available in **English** (default), **French**, **German**, and **Dutch** (`languages/*.po` / `*.mo`). The `.pot` template in `languages/` lets you add any other language.
+
+## 📄 License
+
+[GPL‑2.0-or-later](LICENSE) — open source and free.

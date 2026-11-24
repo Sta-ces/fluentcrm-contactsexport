@@ -1,15 +1,17 @@
 <?php
 /**
- * Plugin Name:       Export Contacts FluentCRM (gratuit)
+ * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
- * Description:       Exportez en un clic tous vos contacts FluentCRM avec toutes leurs informations, listes, étiquettes, statuts et champs personnalisés : téléchargement CSV compatible Excel ou copie du tableau dans le presse-papiers. Un seul fichier, aucune dépendance, aucun réglage.
- * Version:           0.1.0
+ * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
+ * Version:           0.2.0
  * Requires at least: 5.2
  * Requires PHP:      7.0
- * Author:            Sta-ces
+ * Author:            Cedric Staces
+ * Author URI:        https://github.com/Sta-ces
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       fluentcrm-contactsexport
+ * Domain Path:       /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,9 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class FCE_Contact_Exporter {
 
-	const VERSION = '0.1.0';
+	const VERSION = '0.2.0';
 	const SLUG    = 'fce-contact-exporter';
-	const CAP     = 'manage_options';
 	const NONCE   = 'fce_export_nonce';
 	const CHUNK   = 500;
 
@@ -34,9 +35,18 @@ final class FCE_Contact_Exporter {
 	}
 
 	private function __construct() {
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_post_fce_export_csv', array( $this, 'handle_csv_export' ) );
 		add_action( 'wp_ajax_fce_export_rows', array( $this, 'handle_ajax_rows' ) );
+	}
+
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'fluentcrm-contactsexport',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
 	}
 
 	private function table( $name ) {
@@ -47,34 +57,47 @@ final class FCE_Contact_Exporter {
 	public function register_menu() {
 		add_submenu_page(
 			'fluentcrm-admin',
-			__( 'Export des contacts', 'fluentcrm-contactsexport' ),
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
-			self::CAP,
+			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
+			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
 		);
 	}
 
 	/**
-	 * Vérifie que FluentCRM est actif et que ses tables existent.
+	 * Administrators, or any user granted the FluentCRM export capability.
+	 */
+	private function user_can_export() {
+		return current_user_can( 'manage_options' ) || current_user_can( 'fcrm_manage_contacts_export' );
+	}
+
+	/**
+	 * Checks that FluentCRM is active and its tables exist.
 	 *
 	 * @return true|WP_Error
 	 */
 	private function is_ready() {
 		if ( ! defined( 'FLUENTCRM' ) && ! function_exists( 'fluentcrm_get_custom_contact_fields' ) ) {
-			return new WP_Error( 'fce_missing', __( 'FluentCRM doit être installé et activé pour utiliser cet export.', 'fluentcrm-contactsexport' ) );
+			return new WP_Error(
+				'fce_missing',
+				__( 'FluentCRM must be installed and activated to use this export.', 'fluentcrm-contactsexport' )
+			);
 		}
 		global $wpdb;
 		$table = $this->table( 'fc_subscribers' );
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
-			return new WP_Error( 'fce_tables', __( 'Les tables de FluentCRM sont introuvables. Ouvrez FluentCRM une première fois pour terminer son installation, puis revenez ici.', 'fluentcrm-contactsexport' ) );
+			return new WP_Error(
+				'fce_tables',
+				__( 'The FluentCRM tables could not be found. Open FluentCRM once to finish its setup, then come back here.', 'fluentcrm-contactsexport' )
+			);
 		}
 		return true;
 	}
 
 	public function render_page() {
-		if ( ! current_user_can( self::CAP ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'fluentcrm-contactsexport' ) );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Access denied.', 'fluentcrm-contactsexport' ) );
 		}
 
 		$ready = $this->is_ready();
@@ -86,11 +109,11 @@ final class FCE_Contact_Exporter {
 		$count = $this->count_contacts( '' );
 
 		$statuses = array(
-			'subscribed'   => __( 'Inscrits (subscribed)', 'fluentcrm-contactsexport' ),
-			'unsubscribed' => __( 'Désabonnés (unsubscribed)', 'fluentcrm-contactsexport' ),
-			'pending'      => __( 'En attente (pending)', 'fluentcrm-contactsexport' ),
-			'bounced'      => __( 'Rebondis (bounced)', 'fluentcrm-contactsexport' ),
-			'unconfirmed'  => __( 'Non confirmés (unconfirmed)', 'fluentcrm-contactsexport' ),
+			'subscribed'   => __( 'Subscribed', 'fluentcrm-contactsexport' ),
+			'unsubscribed' => __( 'Unsubscribed', 'fluentcrm-contactsexport' ),
+			'pending'      => __( 'Pending', 'fluentcrm-contactsexport' ),
+			'bounced'      => __( 'Bounced', 'fluentcrm-contactsexport' ),
+			'unconfirmed'  => __( 'Unconfirmed', 'fluentcrm-contactsexport' ),
 		);
 
 		$sep_options = array(
@@ -99,15 +122,15 @@ final class FCE_Contact_Exporter {
 		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Export des contacts FluentCRM', 'fluentcrm-contactsexport' ); ?></h1>
+			<h1><?php esc_html_e( 'Export FluentCRM Contacts', 'fluentcrm-contactsexport' ); ?></h1>
 			<p>
 				<?php
 				printf(
 					esc_html(
-						/* translators: %s: nombre de contacts */
+						/* translators: %s: number of contacts */
 						_n(
-							'%s contact est prêt à être exporté (avec listes, étiquettes, statut et champs personnalisés).',
-							'%s contacts sont prêts à être exportés (avec listes, étiquettes, statut et champs personnalisés).',
+							'%s contact is ready to be exported (with lists, tags, status, and custom fields).',
+							'%s contacts are ready to be exported (with lists, tags, status, and custom fields).',
 							(int) $count,
 							'fluentcrm-contactsexport'
 						)
@@ -119,15 +142,15 @@ final class FCE_Contact_Exporter {
 
 			<div style="max-width:560px;background:#fff;border:1px solid #ccd0d4;box-shadow:0 1px 1px rgba(0,0,0,.04);padding:8px 16px 16px;">
 				<p>
-					<label for="fce_status" style="display:block;font-weight:600;margin:8px 0 4px;"><?php esc_html_e( 'Filtre de statut (facultatif)', 'fluentcrm-contactsexport' ); ?></label>
+					<label for="fce_status" style="display:block;font-weight:600;margin:8px 0 4px;"><?php esc_html_e( 'Status filter (optional)', 'fluentcrm-contactsexport' ); ?></label>
 					<select id="fce_status" name="fce_status">
-						<option value=""><?php esc_html_e( 'Tous les contacts', 'fluentcrm-contactsexport' ); ?></option>
+						<option value=""><?php esc_html_e( 'All contacts', 'fluentcrm-contactsexport' ); ?></option>
 						<?php foreach ( $statuses as $value => $label ) : ?>
 							<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
 						<?php endforeach; ?>
 					</select>
 
-					<label for="fce_sep" style="display:block;font-weight:600;margin:12px 0 4px;"><?php esc_html_e( 'Séparateur CSV', 'fluentcrm-contactsexport' ); ?></label>
+					<label for="fce_sep" style="display:block;font-weight:600;margin:12px 0 4px;"><?php esc_html_e( 'CSV separator', 'fluentcrm-contactsexport' ); ?></label>
 					<select id="fce_sep" name="fce_sep">
 						<?php foreach ( $sep_options as $value => $label ) : ?>
 							<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
@@ -137,16 +160,16 @@ final class FCE_Contact_Exporter {
 
 				<p>
 					<button type="button" class="button button-primary button-hero" id="fce-btn-csv">
-						<?php esc_html_e( '⬇ Télécharger en Excel (CSV)', 'fluentcrm-contactsexport' ); ?>
+						<?php esc_html_e( '⬇ Download for Excel (CSV)', 'fluentcrm-contactsexport' ); ?>
 					</button>
 					<button type="button" class="button button-secondary button-hero" id="fce-btn-copy">
-						<?php esc_html_e( '📋 Copier le tableau (coller dans Excel)', 'fluentcrm-contactsexport' ); ?>
+						<?php esc_html_e( '📋 Copy the table (paste into Excel)', 'fluentcrm-contactsexport' ); ?>
 					</button>
 				</p>
 
 				<p id="fce-msg" style="display:none;"></p>
 				<p>
-					<em><?php esc_html_e( 'Le fichier CSV s’ouvre directement dans Excel (double-clic). Pour la copie, cliquez sur la première cellule vide d’Excel puis Collez (Ctrl+V).', 'fluentcrm-contactsexport' ); ?></em>
+					<em><?php esc_html_e( 'The CSV file opens directly in Excel (double-click). For the clipboard copy, click the first empty cell in Excel, then paste (Ctrl+V).', 'fluentcrm-contactsexport' ); ?></em>
 				</p>
 			</div>
 		</div>
@@ -154,11 +177,11 @@ final class FCE_Contact_Exporter {
 		<script type="text/javascript">
 		(function () {
 			var __ = {
-				busy: <?php echo wp_json_encode( __( 'Récupération en cours…', 'fluentcrm-contactsexport' ) ); ?>,
-				prepared: <?php echo wp_json_encode( __( 'Contacts préparés :', 'fluentcrm-contactsexport' ) ); ?>,
-				copied: <?php echo wp_json_encode( __( 'Contacts copiés :', 'fluentcrm-contactsexport' ) ); ?>,
-				paste: <?php echo wp_json_encode( __( 'Collez maintenant avec Ctrl+V dans Excel (une cellule par colonne).', 'fluentcrm-contactsexport' ) ); ?>,
-				unknown: <?php echo wp_json_encode( __( 'Erreur inconnue.', 'fluentcrm-contactsexport' ) ); ?>
+				busy: <?php echo wp_json_encode( __( 'Retrieving contacts…', 'fluentcrm-contactsexport' ) ); ?>,
+				prepared: <?php echo wp_json_encode( __( 'Contacts prepared:', 'fluentcrm-contactsexport' ) ); ?>,
+				copied: <?php echo wp_json_encode( __( 'Contacts copied:', 'fluentcrm-contactsexport' ) ); ?>,
+				paste: <?php echo wp_json_encode( __( 'Now paste into Excel with Ctrl+V (one cell per column).', 'fluentcrm-contactsexport' ) ); ?>,
+				unknown: <?php echo wp_json_encode( __( 'Something went wrong.', 'fluentcrm-contactsexport' ) ); ?>
 			};
 
 			var FCE_AJAX_URL = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
@@ -278,41 +301,42 @@ final class FCE_Contact_Exporter {
 	}
 
 	/* ----------------------------------------------------------------- */
-	/* Données                                                           */
+	/* Data                                                              */
 	/* ----------------------------------------------------------------- */
 
 	/**
-	 * Colonnes de base de la table fc_subscribers et leur libellé d'export.
+	 * Columns of the fc_subscribers table and their export labels.
+	 * Virtual keys prefixed with "__" are filled from joined tables.
 	 */
 	private function get_columns() {
 		return array(
 			array( 'key' => 'id',              'label' => __( 'ID', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'user_id',         'label' => __( 'ID utilisateur WordPress', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'first_name',      'label' => __( 'Prénom', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'last_name',       'label' => __( 'Nom', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'email',           'label' => __( 'E-mail', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'status',          'label' => __( 'Statut', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'contact_type',    'label' => __( 'Type de contact', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'phone',           'label' => __( 'Téléphone', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'prefix',          'label' => __( 'Civilité', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'address_line_1',  'label' => __( 'Adresse 1', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'address_line_2',  'label' => __( 'Adresse 2', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'postal_code',     'label' => __( 'Code postal', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'city',            'label' => __( 'Ville', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'state',           'label' => __( 'Région/État', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'country',         'label' => __( 'Pays', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'timezone',        'label' => __( 'Fuseau horaire', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'date_of_birth',   'label' => __( 'Date de naissance', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'user_id',         'label' => __( 'WordPress user ID', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'first_name',      'label' => __( 'First name', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'last_name',       'label' => __( 'Last name', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'email',           'label' => __( 'Email', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'status',          'label' => __( 'Status', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'contact_type',    'label' => __( 'Contact type', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'phone',           'label' => __( 'Phone', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'prefix',          'label' => __( 'Title', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'address_line_1',  'label' => __( 'Address line 1', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'address_line_2',  'label' => __( 'Address line 2', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'postal_code',     'label' => __( 'Postal code', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'city',            'label' => __( 'City', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'state',           'label' => __( 'State / Province', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'country',         'label' => __( 'Country', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'timezone',        'label' => __( 'Timezone', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'date_of_birth',   'label' => __( 'Date of birth', 'fluentcrm-contactsexport' ) ),
 			array( 'key' => 'total_points',    'label' => __( 'Points', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'life_time_value', 'label' => __( 'Valeur vie client', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'life_time_value', 'label' => __( 'Lifetime value', 'fluentcrm-contactsexport' ) ),
 			array( 'key' => 'source',          'label' => __( 'Source', 'fluentcrm-contactsexport' ) ),
 			array( 'key' => 'ip',              'label' => __( 'IP', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'company_id',      'label' => __( 'ID entreprise', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'created_at',      'label' => __( 'Créé le', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'updated_at',      'label' => __( 'Modifié le', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => 'last_activity',   'label' => __( 'Dernière activité', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => '__lists',         'label' => __( 'Listes', 'fluentcrm-contactsexport' ) ),
-			array( 'key' => '__tags',          'label' => __( 'Étiquettes', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'company_id',      'label' => __( 'Company ID', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'created_at',      'label' => __( 'Created at', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'updated_at',      'label' => __( 'Updated at', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => 'last_activity',   'label' => __( 'Last activity', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => '__lists',         'label' => __( 'Lists', 'fluentcrm-contactsexport' ) ),
+			array( 'key' => '__tags',          'label' => __( 'Tags', 'fluentcrm-contactsexport' ) ),
 		);
 	}
 
@@ -331,7 +355,7 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * Clés des champs personnalisés, avec leur libellé si disponible.
+	 * Custom field keys with their label when available.
 	 */
 	private function get_custom_field_keys() {
 		global $wpdb;
@@ -349,8 +373,8 @@ final class FCE_Contact_Exporter {
 			}
 		}
 
-		$existing_types = $wpdb->get_col( 'SELECT DISTINCT `key` FROM ' . $this->table( 'fc_subscriber_meta' ) . " WHERE object_type = 'custom_field' LIMIT 500" );
-		foreach ( (array) $existing_types as $key ) {
+		$existing_keys = $wpdb->get_col( 'SELECT DISTINCT `key` FROM ' . $this->table( 'fc_subscriber_meta' ) . " WHERE object_type = 'custom_field' LIMIT 500" );
+		foreach ( (array) $existing_keys as $key ) {
 			if ( $key && ! isset( $keys[ $key ] ) ) {
 				$keys[ $key ] = $key;
 			}
@@ -360,7 +384,7 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * Extrait un lot de contacts avec tags, listes et champs personnalisés.
+	 * Fetches a chunk of contacts with tags, lists, and custom fields.
 	 *
 	 * @return array {columns: string[], rows: array[], last_id: int, has_more: bool}
 	 */
@@ -470,8 +494,8 @@ final class FCE_Contact_Exporter {
 	public function handle_ajax_rows() {
 		check_ajax_referer( self::NONCE, 'nonce' );
 
-		if ( ! current_user_can( self::CAP ) ) {
-			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'fluentcrm-contactsexport' ) ), 403 );
+		if ( ! $this->user_can_export() ) {
+			wp_send_json_error( array( 'message' => __( 'Access denied.', 'fluentcrm-contactsexport' ) ), 403 );
 		}
 
 		$ready = $this->is_ready();
@@ -487,11 +511,11 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * Export CSV diffusé en continu (lot par lot) pour éviter tout dépassement mémoire.
+	 * Streams the CSV export chunk by chunk to avoid memory exhaustion.
 	 */
 	public function handle_csv_export() {
-		if ( ! current_user_can( self::CAP ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'fluentcrm-contactsexport' ), 403 );
+		if ( ! $this->user_can_export() ) {
+			wp_die( esc_html__( 'Access denied.', 'fluentcrm-contactsexport' ), 403 );
 		}
 		check_admin_referer( self::NONCE );
 
@@ -513,8 +537,8 @@ final class FCE_Contact_Exporter {
 		$out = fopen( 'php://output', 'w' );
 		fwrite( $out, "\xEF\xBB\xBF" );
 
-		$last_id = 0;
-		$count   = 0;
+		$last_id        = 0;
+		$count          = 0;
 		$header_written = false;
 		do {
 			$chunk = $this->get_chunk( $status, self::CHUNK, $last_id );

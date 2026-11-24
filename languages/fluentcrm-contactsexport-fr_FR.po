@@ -1,0 +1,171 @@
+msgid ""
+msgstr " Project-Id-Version: Export FluentCRM Contacts 0.2.0\n Report-Msgid-Bugs-To: https://github.com/Sta-ces/fluentcrm-contactsexport/issues\n PO-Revision-Date: 2024-01-01 00:00+0000\n Last-Translator: Cedric Staces\n Language-Team: Français\n Language: fr_FR\n MIME-Version: 1.0\n Content-Type: text/plain; charset=UTF-8\n Content-Transfer-Encoding: 8bit\n Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: fluentcrm-contactsexport.php
+msgid "Export Contacts"
+msgstr "Exporter les contacts"
+
+#: fluentcrm-contactsexport.php
+msgid "FluentCRM must be installed and activated to use this export."
+msgstr "FluentCRM doit être installé et activé pour utiliser cet export."
+
+#: fluentcrm-contactsexport.php
+msgid "The FluentCRM tables could not be found. Open FluentCRM once to finish its setup, then come back here."
+msgstr "Les tables de FluentCRM sont introuvables. Ouvrez FluentCRM une première fois pour terminer son installation, puis revenez ici."
+
+#: fluentcrm-contactsexport.php
+msgid "Access denied."
+msgstr "Accès refusé."
+
+#: fluentcrm-contactsexport.php
+msgid "Subscribed"
+msgstr "Inscrits"
+
+#: fluentcrm-contactsexport.php
+msgid "Unsubscribed"
+msgstr "Désabonnés"
+
+#: fluentcrm-contactsexport.php
+msgid "Pending"
+msgstr "En attente"
+
+#: fluentcrm-contactsexport.php
+msgid "Bounced"
+msgstr "Rebondis"
+
+#: fluentcrm-contactsexport.php
+msgid "Unconfirmed"
+msgstr "Non confirmés"
+
+#: fluentcrm-contactsexport.php
+msgid "Retrieving contacts…"
+msgstr "Récupération en cours…"
+
+#: fluentcrm-contactsexport.php
+msgid "Contacts prepared:"
+msgstr "Contacts préparés :"
+
+#: fluentcrm-contactsexport.php
+msgid "Contacts copied:"
+msgstr "Contacts copiés :"
+
+#: fluentcrm-contactsexport.php
+msgid "Now paste into Excel with Ctrl+V (one cell per column)."
+msgstr "Collez maintenant avec Ctrl+V dans Excel (une cellule par colonne)."
+
+#: fluentcrm-contactsexport.php
+msgid "Something went wrong."
+msgstr "Une erreur est survenue."
+
+#: fluentcrm-contactsexport.php
+msgid "ID"
+msgstr "ID"
+
+#: fluentcrm-contactsexport.php
+msgid "WordPress user ID"
+msgstr "ID utilisateur WordPress"
+
+#: fluentcrm-contactsexport.php
+msgid "First name"
+msgstr "Prénom"
+
+#: fluentcrm-contactsexport.php
+msgid "Last name"
+msgstr "Nom"
+
+#: fluentcrm-contactsexport.php
+msgid "Email"
+msgstr "E-mail"
+
+#: fluentcrm-contactsexport.php
+msgid "Status"
+msgstr "Statut"
+
+#: fluentcrm-contactsexport.php
+msgid "Contact type"
+msgstr "Type de contact"
+
+#: fluentcrm-contactsexport.php
+msgid "Phone"
+msgstr "Téléphone"
+
+#: fluentcrm-contactsexport.php
+msgid "Title"
+msgstr "Civilité"
+
+#: fluentcrm-contactsexport.php
+msgid "Address line 1"
+msgstr "Adresse 1"
+
+#: fluentcrm-contactsexport.php
+msgid "Address line 2"
+msgstr "Adresse 2"
+
+#: fluentcrm-contactsexport.php
+msgid "Postal code"
+msgstr "Code postal"
+
+#: fluentcrm-contactsexport.php
+msgid "City"
+msgstr "Ville"
+
+#: fluentcrm-contactsexport.php
+msgid "State / Province"
+msgstr "Région/État"
+
+#: fluentcrm-contactsexport.php
+msgid "Country"
+msgstr "Pays"
+
+#: fluentcrm-contactsexport.php
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#: fluentcrm-contactsexport.php
+msgid "Date of birth"
+msgstr "Date de naissance"
+
+#: fluentcrm-contactsexport.php
+msgid "Points"
+msgstr "Points"
+
+#: fluentcrm-contactsexport.php
+msgid "Lifetime value"
+msgstr "Valeur vie client"
+
+#: fluentcrm-contactsexport.php
+msgid "Source"
+msgstr "Source"
+
+#: fluentcrm-contactsexport.php
+msgid "IP"
+msgstr "IP"
+
+#: fluentcrm-contactsexport.php
+msgid "Company ID"
+msgstr "ID entreprise"
+
+#: fluentcrm-contactsexport.php
+msgid "Created at"
+msgstr "Créé le"
+
+#: fluentcrm-contactsexport.php
+msgid "Updated at"
+msgstr "Modifié le"
+
+#: fluentcrm-contactsexport.php
+msgid "Last activity"
+msgstr "Dernière activité"
+
+#: fluentcrm-contactsexport.php
+msgid "Lists"
+msgstr "Listes"
+
+#: fluentcrm-contactsexport.php
+msgid "Tags"
+msgstr "Étiquettes"
+
+#: fluentcrm-contactsexport.php
+msgid "%s contact is ready to be exported (with lists, tags, status, and custom fields)."
+msgid_plural "%s contacts are ready to be exported (with lists, tags, status, and custom fields)."
+msgstr[0] "%s contact est prêt à être exporté (avec listes, étiquettes, statut et champs personnalisés)."
+msgstr[1] "%s contacts sont prêts à être exportés (avec listes, étiquettes, statut et champs personnalisés)."
