@@ -1,5 +1,5 @@
 msgid ""
-msgstr " Project-Id-Version: Export FluentCRM Contacts 0.3.0\n Report-Msgid-Bugs-To: https://github.com/Sta-ces/fluentcrm-contactsexport/issues\n PO-Revision-Date: 2024-01-01 00:00+0000\n Last-Translator: Cedric Staces\n Language-Team: Deutsch\n Language: de_DE\n MIME-Version: 1.0\n Content-Type: text/plain; charset=UTF-8\n Content-Transfer-Encoding: 8bit\n Plural-Forms: nplurals=2; plural=(n != 1);\n"
+msgstr " Project-Id-Version: Export FluentCRM Contacts 0.4.0\n Report-Msgid-Bugs-To: https://github.com/Sta-ces/fluentcrm-contactsexport/issues\n PO-Revision-Date: 2024-01-01 00:00+0000\n Last-Translator: Cedric Staces\n Language-Team: Deutsch\n Language: de_DE\n MIME-Version: 1.0\n Content-Type: text/plain; charset=UTF-8\n Content-Transfer-Encoding: 8bit\n Plural-Forms: nplurals=2; plural=(n != 1);\n"
 #: fluentcrm-contactsexport.php
 msgid "Export FluentCRM Contacts was deactivated because FluentCRM Pro already provides contact export."
 msgstr "Export FluentCRM Contacts wurde deaktiviert, da FluentCRM Pro den Kontaktexport bereits mitbringt."
@@ -7,6 +7,10 @@ msgstr "Export FluentCRM Contacts wurde deaktiviert, da FluentCRM Pro den Kontak
 #: fluentcrm-contactsexport.php
 msgid "Export Contacts"
 msgstr "Kontakte exportieren"
+
+#: fluentcrm-contactsexport.php
+msgid "Export all your contacts with lists, tags, statuses, and custom fields to Excel."
+msgstr "Exportieren Sie alle Ihre Kontakte mit Listen, Tags, Status und benutzerdefinierten Feldern nach Excel."
 
 #: fluentcrm-contactsexport.php
 msgid "FluentCRM must be installed and activated to use this export."
@@ -39,6 +43,34 @@ msgstr "Unzustellbar"
 #: fluentcrm-contactsexport.php
 msgid "Unconfirmed"
 msgstr "Unbestätigt"
+
+#: fluentcrm-contactsexport.php
+msgid "Export FluentCRM Contacts"
+msgstr "FluentCRM-Kontakte exportieren"
+
+#: fluentcrm-contactsexport.php
+msgid "Status filter (optional)"
+msgstr "Statusfilter (optional)"
+
+#: fluentcrm-contactsexport.php
+msgid "All contacts"
+msgstr "Alle Kontakte"
+
+#: fluentcrm-contactsexport.php
+msgid "CSV separator"
+msgstr "CSV-Trennzeichen"
+
+#: fluentcrm-contactsexport.php
+msgid "⬇ Download for Excel (CSV)"
+msgstr "⬇ Für Excel herunterladen (CSV)"
+
+#: fluentcrm-contactsexport.php
+msgid "📋 Copy the table (paste into Excel)"
+msgstr "📋 Tabelle kopieren (in Excel einfügen)"
+
+#: fluentcrm-contactsexport.php
+msgid "The CSV file opens directly in Excel (double-click). For the clipboard copy, click the first empty cell in Excel, then paste (Ctrl+V)."
+msgstr "Die CSV-Datei öffnet sich direkt in Excel (Doppelklick). Für das Kopieren klicken Sie auf die erste leere Zelle in Excel und fügen dann ein (Strg+V)."
 
 #: fluentcrm-contactsexport.php
 msgid "Retrieving contacts…"

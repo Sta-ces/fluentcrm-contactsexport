@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.3.0
+ * Version:           0.4.0
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -22,8 +22,8 @@ define( 'FCE_PLUGIN_FILE', __FILE__ );
 
 final class FCE_Contact_Exporter {
 
-	const VERSION = '0.3.0';
-	const SLUG    = 'fluentcrm-admin#/export-contacts';
+	const VERSION = '0.4.0';
+	const SLUG    = 'fce-contact-exporter';
 	const NONCE   = 'fce_export_nonce';
 	const CHUNK   = 500;
 
@@ -40,7 +40,7 @@ final class FCE_Contact_Exporter {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_init', array( $this, 'maybe_deactivate_on_pro' ) );
-		add_action( 'admin_head', array( $this, 'redirect_hash_url' ) );
+		add_filter( 'fluent_crm/menu_items', array( $this, 'inject_menu_item' ) );
 		add_action( 'admin_post_fce_export_csv', array( $this, 'handle_csv_export' ) );
 		add_action( 'wp_ajax_fce_export_rows', array( $this, 'handle_ajax_rows' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_render_deactivated_notice' ) );
@@ -100,43 +100,72 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * FluentCRM's Vue router redirects any unknown /#/ route back to the dashboard,
-	 * so a URL typed manually with a real "#" fragment is turned into this plugin's
-	 * working (encoded) admin URL before the app boots.
+	 * Registers the export page as a hidden admin page, reachable by its classic
+	 * WordPress URL (admin.php?page=fce-contact-exporter). The visible entry is
+	 * injected into the FluentCRM sidebar under Contacts, right after Tags.
 	 */
-	public function redirect_hash_url() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_GET['page'] ) || 'fluentcrm-admin' !== $_GET['page'] || ! $this->user_can_export() ) {
-			return;
-		}
-		?>
-		<script type="text/javascript">
-			(function () {
-				if (window.location.hash.indexOf('#/export-contacts') === 0) {
-					window.location.replace(<?php echo wp_json_encode( admin_url( 'admin.php?page=' . rawurlencode( self::SLUG ) ) ); ?>);
-				}
-			})();
-		</script>
-		<?php
-	}
-
 	public function register_menu() {
 		if ( $this->is_pro_active() ) {
 			return;
 		}
 
-		if ( ! defined( 'FLUENTCRM' ) ) {
-			return;
-		}
-
 		add_submenu_page(
-			'fluentcrm-admin',
+			null,
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
 			'manage_options',
 			self::SLUG,
 			array( $this, 'render_page' )
 		);
+	}
+
+	/**
+	 * Adds the export entry to FluentCRM's sidebar under Contacts, after Tags.
+	 *
+	 * @param array $menu_items FluentCRM sidebar menu items.
+	 * @return array
+	 */
+	public function inject_menu_item( $menu_items ) {
+		if ( ! is_array( $menu_items ) || ! $this->is_ready_check() || ! $this->user_can_export() ) {
+			return $menu_items;
+		}
+
+		foreach ( $menu_items as $index => $item ) {
+			if ( empty( $item['key'] ) || 'contacts' !== $item['key'] ) {
+				continue;
+			}
+
+			$export_item = array(
+				'key'         => 'fce_export_contacts',
+				'label'       => __( 'Export Contacts', 'fluentcrm-contactsexport' ),
+				'permalink'   => admin_url( 'admin.php?page=' . self::SLUG ),
+				'description' => __( 'Export all your contacts with lists, tags, statuses, and custom fields to Excel.', 'fluentcrm-contactsexport' ),
+			);
+
+			$items = isset( $item['sub_items'] ) && is_array( $item['sub_items'] ) ? $item['sub_items'] : array();
+			if ( empty( $items ) ) {
+				continue;
+			}
+			$insert_at = count( $items );
+			foreach ( $items as $position => $sub_item ) {
+				if ( ! empty( $sub_item['key'] ) && 'tags' === $sub_item['key'] ) {
+					$insert_at = $position + 1;
+					break;
+				}
+			}
+
+			array_splice( $menu_items[ $index ]['sub_items'], $insert_at, 0, array( $export_item ) );
+			break;
+		}
+
+		return $menu_items;
+	}
+
+	/**
+	 * Lightweight FluentCRM presence check for the menu injection.
+	 */
+	private function is_ready_check() {
+		return defined( 'FLUENTCRM' ) || function_exists( 'fluentcrm_get_custom_contact_fields' );
 	}
 
 	/**
