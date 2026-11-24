@@ -286,31 +286,34 @@ final class FCE_Contact_Exporter {
 			</p>
 
 			<div style="max-width:560px;background:#fff;border:1px solid #ccd0d4;box-shadow:0 1px 1px rgba(0,0,0,.04);padding:8px 16px 16px;">
-				<p>
-					<label for="fce_status" style="display:block;font-weight:600;margin:8px 0 4px;"><?php esc_html_e( 'Status filter (optional)', 'fluentcrm-contactsexport' ); ?></label>
-					<select id="fce_status" name="fce_status">
-						<option value=""><?php esc_html_e( 'All contacts', 'fluentcrm-contactsexport' ); ?></option>
-						<?php foreach ( $statuses as $value => $label ) : ?>
-							<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
-						<?php endforeach; ?>
-					</select>
+				<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
+					<div>
+						<label for="fce_status" style="display:block;font-weight:600;margin:8px 0 4px;"><?php esc_html_e( 'Status filter (optional)', 'fluentcrm-contactsexport' ); ?></label>
+						<select id="fce_status" name="fce_status">
+							<option value=""><?php esc_html_e( 'All contacts', 'fluentcrm-contactsexport' ); ?></option>
+							<?php foreach ( $statuses as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<div>
+						<label for="fce_sep" style="display:block;font-weight:600;margin:12px 0 4px;"><?php esc_html_e( 'CSV separator', 'fluentcrm-contactsexport' ); ?></label>
+						<select id="fce_sep" name="fce_sep">
+							<?php foreach ( $sep_options as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</div>
 
-					<label for="fce_sep" style="display:block;font-weight:600;margin:12px 0 4px;"><?php esc_html_e( 'CSV separator', 'fluentcrm-contactsexport' ); ?></label>
-					<select id="fce_sep" name="fce_sep">
-						<?php foreach ( $sep_options as $value => $label ) : ?>
-							<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</p>
-
-				<p>
+				<div>
 					<button type="button" class="button button-primary button-hero" id="fce-btn-csv">
 						<?php esc_html_e( '⬇ Download for Excel (CSV)', 'fluentcrm-contactsexport' ); ?>
 					</button>
 					<button type="button" class="button button-secondary button-hero" id="fce-btn-copy">
-						<?php esc_html_e( '📋 Copy the table (paste into Excel)', 'fluentcrm-contactsexport' ); ?>
+						<?php esc_html_e( 'Copy the table (paste into Excel)', 'fluentcrm-contactsexport' ); ?>
 					</button>
-				</p>
+				</div>
 
 				<p id="fce-msg" style="display:none;"></p>
 				<p>
