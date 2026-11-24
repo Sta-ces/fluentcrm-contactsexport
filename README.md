@@ -2,14 +2,14 @@
 
 A **very lightweight** WordPress plugin (one PHP file, no dependencies, no settings) that exports **all FluentCRM contacts in one click** — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV, or copies them as a table to your clipboard for pasting into Excel.
 
-![Version](https://img.shields.io/badge/version-0.5.1-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
+![Version](https://img.shields.io/badge/version-0.5.3-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
 
 ## ✨ How it works
 
 In your WordPress admin, the **Export Contacts** entry is available in two places:
 
 1. **WordPress admin sidebar → FluentCRM → Export Contacts**, right after **Tags**. The link points directly to `admin.php?page=fce-contact-exporter`.
-2. **FluentCRM sidebar → Contacts → Export Contacts**, right after **Tags** as well (injected through FluentCRM's own `fluent_crm/menu_items` filter).
+2. **FluentCRM sidebar → Contacts → Export Contacts**, right below **Segments**, with a small document icon (injected through FluentCRM's own `fluent_crm/menu_items` filter).
 
 > **Note about the URL**: the export page lives at the classic WordPress URL `/wp-admin/admin.php?page=fce-contact-exporter`. A `#` fragment is never sent to the server, and FluentCRM's compiled Vue router redirects any unknown `#/` route back to the dashboard, so a plugin page cannot reliably live inside the SPA's hash URL space — the classic URL is the robust choice.
 
@@ -41,7 +41,7 @@ FluentCRM (free version) has CSV **import** built in, but contact **export** is 
 - No settings page, no own storage: nothing to maintain.
 - SQL queries **chunked in batches of 500 contacts**: works smoothly even with tens of thousands of contacts, without exceeding memory limits (500 contacts typically use only a few MB of RAM per batch — including for exports of 3,000+ contacts, or 30,000+).
 - Native WordPress admin UI only: FluentCRM updates have minimal impact (the plugin reads the standard `fc_subscribers`, `fc_tags`, `fc_lists`, `fc_subscriber_pivot`, and `fc_subscriber_meta` tables).
-- Fully translatable (textdomain `fluentcrm-contactsexport`) with bundled French, German, and Dutch translations, plus a `.pot` template.
+- Fully translatable (textdomain `fluentcrm-contactsexport`) with bundled French, German, Dutch, and Russian translations, plus a `.pot` template.
 
 ## 🔒 Security
 
@@ -65,7 +65,7 @@ No action required. The plugin automatically:
 
 ## 🌍 Translations
 
-The admin UI is available in **English** (default), **French**, **German**, and **Dutch** (`languages/*.po` / `*.mo`). The `.pot` template in `languages/` lets you add any other language.
+The admin UI is available in **English** (default), **French**, **German**, **Dutch**, and **Russian** (`languages/*.po` / `*.mo`). The `.pot` template in `languages/` lets you add any other language.
 
 ## 📄 License
 

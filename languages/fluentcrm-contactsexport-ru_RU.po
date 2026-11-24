@@ -1,0 +1,208 @@
+msgid ""
+msgstr " Project-Id-Version: Export FluentCRM Contacts 0.5.3\n Report-Msgid-Bugs-To: https://github.com/Sta-ces/fluentcrm-contactsexport/issues\n PO-Revision-Date: 2024-01-01 00:00+0000\n Last-Translator: Cedric Staces\n Language-Team: Русский\n Language: ru_RU\n MIME-Version: 1.0\n Content-Type: text/plain; charset=UTF-8\n Content-Transfer-Encoding: 8bit\n Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2));\n"
+#: fluentcrm-contactsexport.php
+msgid "Export FluentCRM Contacts was deactivated because FluentCRM Pro already provides contact export."
+msgstr "Экспорт контактов FluentCRM отключён, так как FluentCRM Pro уже предоставляет экспорт контактов."
+
+#: fluentcrm-contactsexport.php
+msgid "Export Contacts"
+msgstr "Экспорт контактов"
+
+#: fluentcrm-contactsexport.php
+msgid "Export all your contacts with lists, tags, statuses, and custom fields to Excel."
+msgstr "Экспортируйте все свои контакты со списками, тегами, статусами и пользовательскими полями в Excel."
+
+#: fluentcrm-contactsexport.php
+msgid "FluentCRM must be installed and activated to use this export."
+msgstr "Для использования этого экспорта необходимо установить и активировать FluentCRM."
+
+#: fluentcrm-contactsexport.php
+msgid "The FluentCRM tables could not be found. Open FluentCRM once to finish its setup, then come back here."
+msgstr "Таблицы FluentCRM не найдены. Откройте FluentCRM один раз, чтобы завершить настройку, затем вернитесь сюда."
+
+#: fluentcrm-contactsexport.php
+msgid "Access denied."
+msgstr "Доступ запрещён."
+
+#: fluentcrm-contactsexport.php
+msgid "Subscribed"
+msgstr "Подписан"
+
+#: fluentcrm-contactsexport.php
+msgid "Unsubscribed"
+msgstr "Отписан"
+
+#: fluentcrm-contactsexport.php
+msgid "Pending"
+msgstr "Ожидает"
+
+#: fluentcrm-contactsexport.php
+msgid "Bounced"
+msgstr "Возвращён"
+
+#: fluentcrm-contactsexport.php
+msgid "Unconfirmed"
+msgstr "Не подтверждён"
+
+#: fluentcrm-contactsexport.php
+msgid "Export FluentCRM Contacts"
+msgstr "Экспорт контактов FluentCRM"
+
+#: fluentcrm-contactsexport.php
+msgid "Status filter (optional)"
+msgstr "Фильтр по статусу (необязательно)"
+
+#: fluentcrm-contactsexport.php
+msgid "All contacts"
+msgstr "Все контакты"
+
+#: fluentcrm-contactsexport.php
+msgid "CSV separator"
+msgstr "Разделитель CSV"
+
+#: fluentcrm-contactsexport.php
+msgid "⬇ Download for Excel (CSV)"
+msgstr "⬇ Скачать для Excel (CSV)"
+
+#: fluentcrm-contactsexport.php
+msgid "Copy the table (paste into Excel)"
+msgstr "Копировать таблицу (вставить в Excel)"
+
+#: fluentcrm-contactsexport.php
+msgid "The CSV file opens directly in Excel (double-click). For the clipboard copy, click the first empty cell in Excel, then paste (Ctrl+V)."
+msgstr "CSV-файл открывается в Excel напрямую (двойной щелчок). Для копирования в буфер обмена щелкните первую пустую ячейку в Excel и вставьте (Ctrl+V)."
+
+#: fluentcrm-contactsexport.php
+msgid "Retrieving contacts…"
+msgstr "Получение контактов…"
+
+#: fluentcrm-contactsexport.php
+msgid "Contacts prepared:"
+msgstr "Подготовлено контактов:"
+
+#: fluentcrm-contactsexport.php
+msgid "Contacts copied:"
+msgstr "Скопировано контактов:"
+
+#: fluentcrm-contactsexport.php
+msgid "Now paste into Excel with Ctrl+V (one cell per column)."
+msgstr "Теперь вставьте в Excel с помощью Ctrl+V (одна ячейка на столбец)."
+
+#: fluentcrm-contactsexport.php
+msgid "Something went wrong."
+msgstr "Что-то пошло не так."
+
+#: fluentcrm-contactsexport.php
+msgid "ID"
+msgstr "ID"
+
+#: fluentcrm-contactsexport.php
+msgid "WordPress user ID"
+msgstr "ID пользователя WordPress"
+
+#: fluentcrm-contactsexport.php
+msgid "First name"
+msgstr "Имя"
+
+#: fluentcrm-contactsexport.php
+msgid "Last name"
+msgstr "Фамилия"
+
+#: fluentcrm-contactsexport.php
+msgid "Email"
+msgstr "Эл. почта"
+
+#: fluentcrm-contactsexport.php
+msgid "Status"
+msgstr "Статус"
+
+#: fluentcrm-contactsexport.php
+msgid "Contact type"
+msgstr "Тип контакта"
+
+#: fluentcrm-contactsexport.php
+msgid "Phone"
+msgstr "Телефон"
+
+#: fluentcrm-contactsexport.php
+msgid "Title"
+msgstr "Обращение"
+
+#: fluentcrm-contactsexport.php
+msgid "Address line 1"
+msgstr "Адрес, строка 1"
+
+#: fluentcrm-contactsexport.php
+msgid "Address line 2"
+msgstr "Адрес, строка 2"
+
+#: fluentcrm-contactsexport.php
+msgid "Postal code"
+msgstr "Почтовый индекс"
+
+#: fluentcrm-contactsexport.php
+msgid "City"
+msgstr "Город"
+
+#: fluentcrm-contactsexport.php
+msgid "State / Province"
+msgstr "Область / Регион"
+
+#: fluentcrm-contactsexport.php
+msgid "Country"
+msgstr "Страна"
+
+#: fluentcrm-contactsexport.php
+msgid "Timezone"
+msgstr "Часовой пояс"
+
+#: fluentcrm-contactsexport.php
+msgid "Date of birth"
+msgstr "Дата рождения"
+
+#: fluentcrm-contactsexport.php
+msgid "Points"
+msgstr "Баллы"
+
+#: fluentcrm-contactsexport.php
+msgid "Lifetime value"
+msgstr "Пожизненная ценность"
+
+#: fluentcrm-contactsexport.php
+msgid "Source"
+msgstr "Источник"
+
+#: fluentcrm-contactsexport.php
+msgid "IP"
+msgstr "IP"
+
+#: fluentcrm-contactsexport.php
+msgid "Company ID"
+msgstr "ID компании"
+
+#: fluentcrm-contactsexport.php
+msgid "Created at"
+msgstr "Создано"
+
+#: fluentcrm-contactsexport.php
+msgid "Updated at"
+msgstr "Обновлено"
+
+#: fluentcrm-contactsexport.php
+msgid "Last activity"
+msgstr "Последняя активность"
+
+#: fluentcrm-contactsexport.php
+msgid "Lists"
+msgstr "Списки"
+
+#: fluentcrm-contactsexport.php
+msgid "Tags"
+msgstr "Теги"
+
+#: fluentcrm-contactsexport.php
+msgid "%s contact is ready to be exported (with lists, tags, status, and custom fields)."
+msgid_plural "%s contacts are ready to be exported (with lists, tags, status, and custom fields)."
+msgstr[0] "%s контакт готов к экспорту (со списками, тегами, статусами и пользовательскими полями)."
+msgstr[1] "%s контакта готовы к экспорту (со списками, тегами, статусами и пользовательскими полями)."
+msgstr[2] "%s контактов готовы к экспорту (со списками, тегами, статусами и пользовательскими полями)."
