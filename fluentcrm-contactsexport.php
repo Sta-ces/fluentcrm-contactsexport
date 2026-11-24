@@ -286,7 +286,7 @@ final class FCE_Contact_Exporter {
 			</p>
 
 			<div style="max-width:560px;background:#fff;border:1px solid #ccd0d4;box-shadow:0 1px 1px rgba(0,0,0,.04);padding:8px 16px 16px;">
-				<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
+				<div style="display:flex;flex-wrap:wrap;justify-content:space-around;margin-bottom:2rem;align-items:flex-end;">
 					<div>
 						<label for="fce_status" style="display:block;font-weight:600;margin:8px 0 4px;"><?php esc_html_e( 'Status filter (optional)', 'fluentcrm-contactsexport' ); ?></label>
 						<select id="fce_status" name="fce_status">
