@@ -4,7 +4,7 @@ Tags: fluentcrm, export, contacts, csv, excel
 Requires at least: 5.2
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 0.5.0
+Stable tag: 0.5.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,7 @@ Export **all** FluentCRM contacts in **one click**, with **every field**: lists,
 == Installation ==
 
 1. Upload and activate the plugin (Plugins → Add New → Upload Plugin).
-2. Open **FluentCRM → Contacts → Export Contacts** (in the WordPress admin sidebar under FluentCRM, right after Tags, or in the FluentCRM sidebar below Segments) and click one of the two buttons.
+2. Open **FluentCRM → Contacts → Export Contacts** — the entry is available in the WordPress admin sidebar under FluentCRM (right after Tags) and in the FluentCRM sidebar under Contacts (right after Tags) — then click one of the two buttons.
 
 The export page lives at the classic WordPress URL: `/wp-admin/admin.php?page=fce-contact-exporter`.
 
@@ -50,9 +50,9 @@ No. Nothing leaves your site: the export happens locally in your browser or in t
 
 == Changelog ==
 
-= 0.5.0 =
-* Added a visible **Export Contacts** sub-menu in the WordPress admin sidebar, under FluentCRM, right after Tags.
-* The entry inside the FluentCRM sidebar now sits below **Segments** and gets a small download icon to blend in with the rest of the menu.
+= 0.5.1 =
+* Added an **Export Contacts** sub-menu entry in the WordPress admin sidebar under FluentCRM, right after Tags. The link points directly to `admin.php?page=fce-contact-exporter`, so it always resolves to the export page.
+* Restored the 0.4.0 behavior inside the FluentCRM sidebar (entry under Contacts, right after Tags).
 
 = 0.4.0 =
 * The "Export Contacts" entry now lives inside the FluentCRM sidebar under **Contacts**, right after Tags, using FluentCRM's `fluent_crm/menu_items` filter.

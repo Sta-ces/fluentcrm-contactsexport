@@ -2,14 +2,14 @@
 
 A **very lightweight** WordPress plugin (one PHP file, no dependencies, no settings) that exports **all FluentCRM contacts in one click** — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV, or copies them as a table to your clipboard for pasting into Excel.
 
-![Version](https://img.shields.io/badge/version-0.5.0-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
+![Version](https://img.shields.io/badge/version-0.5.1-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
 
 ## ✨ How it works
 
 In your WordPress admin, the **Export Contacts** entry is available in two places:
 
-1. **WordPress admin sidebar → FluentCRM → Export Contacts**, right after **Tags** (classic WordPress sub-menu).
-2. **FluentCRM sidebar → Contacts → Export Contacts**, right below **Segments**, with a small download icon for a native look (injected through FluentCRM's own `fluent_crm/menu_items` filter).
+1. **WordPress admin sidebar → FluentCRM → Export Contacts**, right after **Tags**. The link points directly to `admin.php?page=fce-contact-exporter`.
+2. **FluentCRM sidebar → Contacts → Export Contacts**, right after **Tags** as well (injected through FluentCRM's own `fluent_crm/menu_items` filter).
 
 > **Note about the URL**: the export page lives at the classic WordPress URL `/wp-admin/admin.php?page=fce-contact-exporter`. A `#` fragment is never sent to the server, and FluentCRM's compiled Vue router redirects any unknown `#/` route back to the dashboard, so a plugin page cannot reliably live inside the SPA's hash URL space — the classic URL is the robust choice.
 
