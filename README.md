@@ -2,11 +2,19 @@
 
 A **very lightweight** WordPress plugin (one PHP file, no dependencies, no settings) that exports **all FluentCRM contacts in one click** — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV, or copies them as a table to your clipboard for pasting into Excel.
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
+![Version](https://img.shields.io/badge/version-0.3.0-blue) ![License](https://img.shields.io/badge/license-GPL--2.0-green) ![Price](https://img.shields.io/badge/price-free-brightgreen)
 
 ## ✨ How it works
 
 In your WordPress admin: **FluentCRM → Export Contacts** — that's it.
+
+The page lives under FluentCRM's own menu URL scheme: `/wp-admin/admin.php?page=fluentcrm-admin#/export-contacts`.
+
+> **Note about the URL**: a literal `#` fragment is never sent to the server, and FluentCRM's Vue router redirects unknown `#/` routes to the dashboard. The plugin therefore links to the percent-encoded (but identical for WordPress) form `admin.php?page=fluentcrm-admin%23%2Fexport-contacts`, which is what actually renders the export page. If you paste the clean `#/export-contacts` URL manually, a tiny bridge script redirects you to the working page automatically.
+
+### FluentCRM Pro?
+
+If **FluentCRM Pro** is detected, the plugin **deactivates itself automatically** with an admin notice: Pro already ships contact export, so keeping the plugin enabled would only duplicate a paying feature you already have. Re-activating it when Pro is disabled is safe — the check runs on every admin request.
 
 1. **⬇ Download for Excel (CSV)**: downloads a `fluentcrm-contacts-....csv` file encoded in UTF‑8 (with BOM), which **opens directly in Excel** with a double-click. The separator (`;` or `,`) is selectable depending on your Excel version.
 2. **📋 Copy the table**: copies **all contacts to the clipboard** as a table (TSV). Click the first empty cell in Excel, then **paste (Ctrl+V)**: every value lands in its own column.

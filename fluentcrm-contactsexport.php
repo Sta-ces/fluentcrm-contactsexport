@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -18,10 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+define( 'FCE_PLUGIN_FILE', __FILE__ );
+
 final class FCE_Contact_Exporter {
 
-	const VERSION = '0.2.0';
-	const SLUG    = 'fce-contact-exporter';
+	const VERSION = '0.3.0';
+	const SLUG    = 'fluentcrm-admin#/export-contacts';
 	const NONCE   = 'fce_export_nonce';
 	const CHUNK   = 500;
 
@@ -37,8 +39,11 @@ final class FCE_Contact_Exporter {
 	private function __construct() {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+		add_action( 'admin_init', array( $this, 'maybe_deactivate_on_pro' ) );
+		add_action( 'admin_head', array( $this, 'redirect_hash_url' ) );
 		add_action( 'admin_post_fce_export_csv', array( $this, 'handle_csv_export' ) );
 		add_action( 'wp_ajax_fce_export_rows', array( $this, 'handle_ajax_rows' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_render_deactivated_notice' ) );
 	}
 
 	public function load_textdomain() {
@@ -54,7 +59,76 @@ final class FCE_Contact_Exporter {
 		return $wpdb->prefix . $name;
 	}
 
+	/**
+	 * FluentCRM Pro ships contact export natively, so this plugin deactivates itself.
+	 */
+	private function is_pro_active() {
+		if ( defined( 'FLUENTCAMPAIGN' ) || defined( 'FLUENTCAMPAIGN_PLUGIN_PATH' ) ) {
+			return true;
+		}
+
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'fluent-crm-pro/fluent-crm-pro.php' );
+	}
+
+	public function maybe_deactivate_on_pro() {
+		if ( ! $this->is_pro_active() || ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
+		deactivate_plugins( plugin_basename( FCE_PLUGIN_FILE ) );
+		set_transient( 'fce_deactivated_pro', 1, 5 * MINUTE_IN_SECONDS );
+
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
+		}
+	}
+
+	public function maybe_render_deactivated_notice() {
+		if ( ! get_transient( 'fce_deactivated_pro' ) ) {
+			return;
+		}
+		delete_transient( 'fce_deactivated_pro' );
+
+		printf(
+			'<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+			esc_html__( 'Export FluentCRM Contacts was deactivated because FluentCRM Pro already provides contact export.', 'fluentcrm-contactsexport' )
+		);
+	}
+
+	/**
+	 * FluentCRM's Vue router redirects any unknown /#/ route back to the dashboard,
+	 * so a URL typed manually with a real "#" fragment is turned into this plugin's
+	 * working (encoded) admin URL before the app boots.
+	 */
+	public function redirect_hash_url() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET['page'] ) || 'fluentcrm-admin' !== $_GET['page'] || ! $this->user_can_export() ) {
+			return;
+		}
+		?>
+		<script type="text/javascript">
+			(function () {
+				if (window.location.hash.indexOf('#/export-contacts') === 0) {
+					window.location.replace(<?php echo wp_json_encode( admin_url( 'admin.php?page=' . rawurlencode( self::SLUG ) ) ); ?>);
+				}
+			})();
+		</script>
+		<?php
+	}
+
 	public function register_menu() {
+		if ( $this->is_pro_active() ) {
+			return;
+		}
+
+		if ( ! defined( 'FLUENTCRM' ) ) {
+			return;
+		}
+
 		add_submenu_page(
 			'fluentcrm-admin',
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),

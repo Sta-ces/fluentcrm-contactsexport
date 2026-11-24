@@ -4,7 +4,7 @@ Tags: fluentcrm, export, contacts, csv, excel
 Requires at least: 5.2
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,9 @@ Export **all** FluentCRM contacts in **one click**, with **every field**: lists,
 
 == Frequently Asked Questions ==
 
+= My URL looks like admin.php?page=fluentcrm-admin%23%2Fexport-contacts — is that normal? =
+Yes. It is the classic WordPress admin URL (`admin.php?page=...`) using FluentCRM's menu slug convention. The encoded form is what makes the browser actually load the page (a literal "#" would never reach the server and FluentCRM's app router would redirect it to the dashboard).
+
 = Does it work with 3,000+ contacts? =
 Yes. Contacts are fetched and streamed in batches of 500, so memory use stays constant regardless of the total count (tested against the FluentCRM database schema).
 
@@ -47,6 +50,10 @@ They are detected automatically; make sure FluentCRM is active and the custom fi
 No. Nothing leaves your site: the export happens locally in your browser or in the downloaded file.
 
 == Changelog ==
+
+= 0.3.0 =
+* The export page now lives under the FluentCRM menu URL scheme: `/wp-admin/admin.php?page=fluentcrm-admin#/export-contacts`.
+* The plugin deactivates itself automatically when FluentCRM Pro is detected (Pro already ships contact export), with an admin notice.
 
 = 0.2.0 =
 * English strings only, with bundled French, German, and Dutch translations (.po/.mo + .pot template).
