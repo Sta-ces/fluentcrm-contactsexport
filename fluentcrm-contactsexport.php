@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.4.0
+ * Version:           0.5.0
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -22,7 +22,7 @@ define( 'FCE_PLUGIN_FILE', __FILE__ );
 
 final class FCE_Contact_Exporter {
 
-	const VERSION = '0.4.0';
+	const VERSION = '0.5.0';
 	const SLUG    = 'fce-contact-exporter';
 	const NONCE   = 'fce_export_nonce';
 	const CHUNK   = 500;
@@ -39,6 +39,8 @@ final class FCE_Contact_Exporter {
 	private function __construct() {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+		add_action( 'admin_menu', array( $this, 'position_wp_submenu' ), 999 );
+		add_action( 'admin_head', array( $this, 'print_fluentcrm_menu_styles' ) );
 		add_action( 'admin_init', array( $this, 'maybe_deactivate_on_pro' ) );
 		add_filter( 'fluent_crm/menu_items', array( $this, 'inject_menu_item' ) );
 		add_action( 'admin_post_fce_export_csv', array( $this, 'handle_csv_export' ) );
@@ -100,9 +102,8 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * Registers the export page as a hidden admin page, reachable by its classic
-	 * WordPress URL (admin.php?page=fce-contact-exporter). The visible entry is
-	 * injected into the FluentCRM sidebar under Contacts, right after Tags.
+	 * Registers the export page as a WordPress sub-menu of the FluentCRM menu.
+	 * The entry is repositioned right after the Tags sub-menu entry.
 	 */
 	public function register_menu() {
 		if ( $this->is_pro_active() ) {
@@ -110,7 +111,7 @@ final class FCE_Contact_Exporter {
 		}
 
 		add_submenu_page(
-			null,
+			'fluentcrm-admin',
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
 			__( 'Export Contacts', 'fluentcrm-contactsexport' ),
 			'manage_options',
@@ -120,7 +121,59 @@ final class FCE_Contact_Exporter {
 	}
 
 	/**
-	 * Adds the export entry to FluentCRM's sidebar under Contacts, after Tags.
+	 * Moves the export sub-menu entry right after the FluentCRM Tags entry,
+	 * whatever the order in which the menus were registered.
+	 */
+	public function position_wp_submenu() {
+		global $submenu;
+
+		$parent = 'fluentcrm-admin';
+		if ( empty( $submenu[ $parent ] ) || ! is_array( $submenu[ $parent ] ) ) {
+			return;
+		}
+
+		$entries = array_values( (array) $submenu[ $parent ] );
+
+		$our_pos = null;
+		foreach ( $entries as $position => $entry ) {
+			if ( isset( $entry[2] ) && self::SLUG === $entry[2] ) {
+				$our_pos = $position;
+				break;
+			}
+		}
+
+		if ( null === $our_pos ) {
+			return;
+		}
+
+		$ours = $entries[ $our_pos ];
+		array_splice( $entries, $our_pos, 1 );
+
+		$insert_at = count( $entries );
+		foreach ( $entries as $position => $entry ) {
+			if ( isset( $entry[2] ) && 'fluentcrm-admin#/contact-groups/tags' === $entry[2] ) {
+				$insert_at = $position + 1;
+				break;
+			}
+		}
+
+		array_splice( $entries, $insert_at, 0, array( $ours ) );
+		$submenu[ $parent ] = $entries;
+	}
+
+	/**
+	 * Small dashicon on the export card inside the FluentCRM sidebar.
+	 */
+	public function print_fluentcrm_menu_styles() {
+		if ( ! isset( $_GET['page'] ) || 'fluentcrm-admin' !== $_GET['page'] ) {
+			return;
+		}
+
+		echo '<style>.fluentcrm_submenu_items a[href*="fce-contact-exporter"] .fc_menu_title::before{font-family:dashicons;content:"\\f316";font-size:16px;line-height:1;margin-right:6px;vertical-align:middle;text-decoration:none;}</style>';
+	}
+
+	/**
+	 * Adds the export entry to FluentCRM's sidebar under Contacts, below Segments.
 	 *
 	 * @param array $menu_items FluentCRM sidebar menu items.
 	 * @return array
@@ -148,9 +201,18 @@ final class FCE_Contact_Exporter {
 			}
 			$insert_at = count( $items );
 			foreach ( $items as $position => $sub_item ) {
-				if ( ! empty( $sub_item['key'] ) && 'tags' === $sub_item['key'] ) {
+				if ( ! empty( $sub_item['key'] ) && 'dynamic_segments' === $sub_item['key'] ) {
 					$insert_at = $position + 1;
 					break;
+				}
+			}
+
+			if ( $insert_at === count( $items ) ) {
+				foreach ( $items as $position => $sub_item ) {
+					if ( ! empty( $sub_item['key'] ) && 'tags' === $sub_item['key'] ) {
+						$insert_at = $position + 1;
+						break;
+					}
 				}
 			}
 
