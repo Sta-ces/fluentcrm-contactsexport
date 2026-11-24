@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.5.1
+ * Version:           0.5.2
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -182,6 +182,7 @@ final class FCE_Contact_Exporter {
 				'label'       => __( 'Export Contacts', 'fluentcrm-contactsexport' ),
 				'permalink'   => admin_url( 'admin.php?page=' . self::SLUG ),
 				'description' => __( 'Export all your contacts with lists, tags, statuses, and custom fields to Excel.', 'fluentcrm-contactsexport' ),
+				'icon'		  => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M128 64C92.7 64 64 92.7 64 128L64 512C64 547.3 92.7 576 128 576L208 576L208 464C208 428.7 236.7 400 272 400L448 400L448 234.5C448 217.5 441.3 201.2 429.3 189.2L322.7 82.7C310.7 70.7 294.5 64 277.5 64L128 64zM389.5 240L296 240C282.7 240 272 229.3 272 216L272 122.5L389.5 240zM296 444C271.7 444 252 463.7 252 488L252 568C252 592.3 271.7 612 296 612L312 612C336.3 612 356 592.3 356 568L356 560C356 549 347 540 336 540C325 540 316 549 316 560L316 568C316 570.2 314.2 572 312 572L296 572C293.8 572 292 570.2 292 568L292 488C292 485.8 293.8 484 296 484L312 484C314.2 484 316 485.8 316 488L316 496C316 507 325 516 336 516C347 516 356 507 356 496L356 488C356 463.7 336.3 444 312 444L296 444zM432 444C403.3 444 380 467.3 380 496C380 524.7 403.3 548 432 548C438.6 548 444 553.4 444 560C444 566.6 438.6 572 432 572L400 572C389 572 380 581 380 592C380 603 389 612 400 612L432 612C460.7 612 484 588.7 484 560C484 531.3 460.7 508 432 508C425.4 508 420 502.6 420 496C420 489.4 425.4 484 432 484L456 484C467 484 476 475 476 464C476 453 467 444 456 444L432 444zM528 444C517 444 508 453 508 464L508 495.6C508 531.1 518.5 565.9 538.2 595.4L543.3 603.1C547 608.7 553.3 612 559.9 612C566.5 612 572.8 608.7 576.5 603.1L581.6 595.4C601.3 565.8 611.8 531.1 611.8 495.6L611.8 464C611.8 453 602.8 444 591.8 444C580.8 444 571.8 453 571.8 464L571.8 495.6C571.8 515.2 567.7 534.5 559.8 552.3C551.9 534.5 547.8 515.2 547.8 495.6L547.8 464C547.8 453 538.8 444 527.8 444z"/></svg>'
 			);
 
 			$items = isset( $item['sub_items'] ) && is_array( $item['sub_items'] ) ? $item['sub_items'] : array();
@@ -190,7 +191,7 @@ final class FCE_Contact_Exporter {
 			}
 			$insert_at = count( $items );
 			foreach ( $items as $position => $sub_item ) {
-				if ( ! empty( $sub_item['key'] ) && 'tags' === $sub_item['key'] ) {
+				if ( ! empty( $sub_item['key'] ) && 'dynamic-segments' === $sub_item['key'] ) {
 					$insert_at = $position + 1;
 					break;
 				}
