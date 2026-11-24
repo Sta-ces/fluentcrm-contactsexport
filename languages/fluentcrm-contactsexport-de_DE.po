@@ -65,8 +65,8 @@ msgid "⬇ Download for Excel (CSV)"
 msgstr "⬇ Für Excel herunterladen (CSV)"
 
 #: fluentcrm-contactsexport.php
-msgid "📋 Copy the table (paste into Excel)"
-msgstr "📋 Tabelle kopieren (in Excel einfügen)"
+msgid "Copy the table (paste into Excel)"
+msgstr "Tabelle kopieren (in Excel einfügen)"
 
 #: fluentcrm-contactsexport.php
 msgid "The CSV file opens directly in Excel (double-click). For the clipboard copy, click the first empty cell in Excel, then paste (Ctrl+V)."
