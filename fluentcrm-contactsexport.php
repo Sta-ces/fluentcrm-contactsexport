@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.5.2
+ * Version:           0.5.3
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -203,7 +203,7 @@ final class FCE_Contact_Exporter {
 				continue;
 			}
 			$insert_at = count( $items );
-			foreach ( $items as $position => $sub_item ) {
+			/*foreach ( $items as $position => $sub_item ) {
 				if ( ! empty( $sub_item['key'] ) && 'dynamic_segments' === $sub_item['key'] ) {
 					$insert_at = $position + 1;
 					break;
@@ -217,7 +217,7 @@ final class FCE_Contact_Exporter {
 						break;
 					}
 				}
-			}
+			}*/
 
 			array_splice( $menu_items[ $index ]['sub_items'], $insert_at, 0, array( $export_item ) );
 			break;
