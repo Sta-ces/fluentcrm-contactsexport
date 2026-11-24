@@ -4,7 +4,7 @@ Tags: fluentcrm, export, contacts, csv, excel
 Requires at least: 5.2
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 0.5.3
+Stable tag: 0.5.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,9 @@ They are detected automatically; make sure FluentCRM is active and the custom fi
 No. Nothing leaves your site: the export happens locally in your browser or in the downloaded file.
 
 == Changelog ==
+
+= 0.5.4 =
+* Fixed the **Lists** and **Tags** columns always being empty (in the CSV download and the clipboard copy): the pivot queries compared the stored `object_type` ('FluentCrm\App\Models\Tag' / '…Lists') through a raw SQL literal, and MySQL silently strips unrecognized backslash escapes inside string literals, so the comparison never matched. The classes are now passed as prepared-statement values, which keeps the backslashes intact.
 
 = 0.5.3 =
 * The entry is inserted at the end of the Contacts sub-menu in the FluentCRM sidebar (right below **Segments**); internal cleanups.

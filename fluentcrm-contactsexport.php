@@ -3,7 +3,7 @@
  * Plugin Name:       Export FluentCRM Contacts
  * Plugin URI:        https://github.com/Sta-ces/fluentcrm-contactsexport
  * Description:       Export all FluentCRM contacts in one click — with every field, lists, tags, statuses, and custom fields — to an Excel-ready CSV file, or copy them as a table to the clipboard for pasting into Excel. Single file, no dependencies, no settings.
- * Version:           0.5.3
+ * Version:           0.5.4
  * Requires at least: 5.2
  * Requires PHP:      7.0
  * Author:            Cedric Staces
@@ -22,7 +22,7 @@ define( 'FCE_PLUGIN_FILE', __FILE__ );
 
 final class FCE_Contact_Exporter {
 
-	const VERSION = '0.5.2';
+	const VERSION = '0.5.4';
 	const SLUG    = 'fce-contact-exporter';
 	const NONCE   = 'fce_export_nonce';
 	const CHUNK   = 500;
@@ -586,8 +586,14 @@ final class FCE_Contact_Exporter {
 			$in  = '(' . implode( ',', $ids ) . ')';
 			$pivot = $this->table( 'fc_subscriber_pivot' );
 
-			$tag_rows = $wpdb->get_results( 'SELECT p.subscriber_id AS sid, t.title AS title FROM ' . $pivot . ' p JOIN ' . $this->table( 'fc_tags' ) . " t ON t.id = p.object_id WHERE p.object_type = 'FluentCrm\\App\\Models\\Tag' AND p.subscriber_id IN " . $in, ARRAY_A );
-			$list_rows = $wpdb->get_results( 'SELECT p.subscriber_id AS sid, l.title AS title FROM ' . $pivot . ' p JOIN ' . $this->table( 'fc_lists' ) . " l ON l.id = p.object_id WHERE p.object_type = 'FluentCrm\\App\\Models\\Lists' AND p.subscriber_id IN " . $in, ARRAY_A );
+			$tag_rows = $wpdb->get_results( $wpdb->prepare(
+				'SELECT p.subscriber_id AS sid, t.title AS title FROM ' . $pivot . ' p JOIN ' . $this->table( 'fc_tags' ) . " t ON t.id = p.object_id WHERE p.object_type = %s AND p.subscriber_id IN " . $in,
+				'FluentCrm\\App\\Models\\Tag'
+			), ARRAY_A );
+			$list_rows = $wpdb->get_results( $wpdb->prepare(
+				'SELECT p.subscriber_id AS sid, l.title AS title FROM ' . $pivot . ' p JOIN ' . $this->table( 'fc_lists' ) . " l ON l.id = p.object_id WHERE p.object_type = %s AND p.subscriber_id IN " . $in,
+				'FluentCrm\\App\\Models\\Lists'
+			), ARRAY_A );
 			foreach ( (array) $tag_rows as $row ) {
 				$tags[ $row['sid'] ][] = $row['title'];
 			}
