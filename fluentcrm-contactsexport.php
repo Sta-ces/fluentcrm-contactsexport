@@ -203,21 +203,6 @@ final class FCE_Contact_Exporter {
 				continue;
 			}
 			$insert_at = count( $items );
-			/*foreach ( $items as $position => $sub_item ) {
-				if ( ! empty( $sub_item['key'] ) && 'dynamic_segments' === $sub_item['key'] ) {
-					$insert_at = $position + 1;
-					break;
-				}
-			}
-
-			if ( $insert_at === count( $items ) ) {
-				foreach ( $items as $position => $sub_item ) {
-					if ( ! empty( $sub_item['key'] ) && 'tags' === $sub_item['key'] ) {
-						$insert_at = $position + 1;
-						break;
-					}
-				}
-			}*/
 
 			array_splice( $menu_items[ $index ]['sub_items'], $insert_at, 0, array( $export_item ) );
 			break;
